@@ -22,21 +22,46 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var cliente = app.MapGroup("/clientes").WithName("Clientes").WithOpenApi();
+var cliente = app.MapGroup("/clientes").WithOpenApi();
 
-cliente.MapPost("/{Id}/transacoes", async (int id, [FromBody] TransacaoViewModel transacao, [FromServices] DataContext db) =>
+cliente.MapPost("/{id}/transacoes", async (int id, TransacaoViewModel transacao, DataContext db) =>
 {
-    if (id <= 0 || !db.Clientes.Any(p => p.Id == id))
+
+    if(!transacao.isValid()) return Results.UnprocessableEntity();
+
+
+    var cliente = await db.Clientes.Where(p => p.Id == id).FirstOrDefaultAsync();
+    if (cliente is null)
         return Results.NotFound();
-
-
-    var cliente = await db.Clientes.Where(p => p.Id == id).FirstAsync();
 
     if (!cliente.AddTransacao(transacao))
         return Results.UnprocessableEntity();
     
     await db.SaveChangesAsync();
     return Results.Ok(new { cliente.Limite, cliente.Saldo });
+});
+
+cliente.MapGet("{id}/extrato", async (int id, DataContext db) => {
+    var cliente = await db.Clientes.FirstOrDefaultAsync(p => p.Id == id);
+
+    if(cliente is null)
+       return Results.NotFound();
+
+    var transacoes = await db.Tracacoes.Where(p => p.Id == id).OrderByDescending(p => p.Realizada_em).Take(5).Select(p =>
+         new TransacaoExtradoViewModel
+         {
+             descricao = p.Descricao,
+             realizada_em = p.Realizada_em,
+             tipo = p.Tipo,
+             valor = p.valor
+         }
+    ).ToListAsync();
+
+    return Results.Ok(new ExtratoViewModel
+    {
+        saldo = new SaldoViewModel { limite= cliente.Limite, total = cliente.Saldo},
+        ultimas_transacoes = transacoes
+    });
 });
 
 
@@ -50,8 +75,4 @@ void ConfigurationServices(WebApplicationBuilder builder)
     builder.Services.AddSwaggerGen();
     builder.Services.AddDbContext<DataContext>(p => p.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
-}
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }

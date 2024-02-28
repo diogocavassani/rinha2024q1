@@ -4,12 +4,15 @@ namespace RinhaBackEnd2024Q1.ViewModels
 {
     public class TransacaoViewModel
     {
-        [Required]
         public int Valor { get; set; }
-        [Required]
         public char Tipo { get; set; }
-        [Required]
-        [StringLength(10, ErrorMessage = "Máximo 10 caracteres")]
         public string Descricao { get; set; }
+        public bool isValid()
+        {
+            return Valor > 0
+                && !string.IsNullOrEmpty(Descricao)
+                && Descricao.Length <= 10 && Descricao.Length >= 1
+                && (Tipo == 'd' || Tipo == 'c');
+        }
     }
 }

@@ -25,7 +25,7 @@ namespace RinhaBackEnd2024Q1.Model
         [Required]
         public DateTime Realizada_em { get; set; }
         public virtual Cliente Cliente { get; set; }
-        public virtual int IdCliente { get; set; }
+        public int IdCliente { get; internal set; }
     }
 }
 

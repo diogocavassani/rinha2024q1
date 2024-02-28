@@ -6,6 +6,11 @@ namespace RinhaBackEnd2024Q1.Data
 {
     public class DataContext : DbContext
     {
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options)
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Transacao> Tracacoes { get; set; }
 

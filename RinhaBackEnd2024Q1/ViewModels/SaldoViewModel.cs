@@ -1,6 +1,6 @@
 ﻿namespace RinhaBackEnd2024Q1.ViewModels
 {
-    public class Saldo
+    public class SaldoViewModel
     {
         public int total { get; set; }
         public DateTime data_extrato => DateTime.Now;

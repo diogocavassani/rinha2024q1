@@ -27,10 +27,10 @@ namespace RinhaBackEnd2024Q1.Model
         public bool AddTransacao(TransacaoViewModel transacao)
         {
             Saldo -= transacao.Valor;
-            if (Saldo > Limite * -1)
+            if (Saldo < Limite * -1)
                 return false;
 
-            Transacoes.Add(new Transacao { Descricao = transacao.Descricao, Tipo = transacao.Tipo, valor = transacao.Valor, Realizada_em = DateTime.Now, Cliente = this, IdCliente = this.Id });
+            Transacoes.Add(new Transacao { Descricao = transacao.Descricao, Tipo = transacao.Tipo, valor = transacao.Valor, Realizada_em = DateTime.Now, Cliente = this });
             return true;
         }
     }
