@@ -73,6 +73,6 @@ void ConfigurationServices(WebApplicationBuilder builder)
 {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
-    builder.Services.AddDbContext<DataContext>(p => p.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+    builder.Services.AddDbContext<DataContext>(p => p.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 }
