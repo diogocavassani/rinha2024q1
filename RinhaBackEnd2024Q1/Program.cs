@@ -14,11 +14,11 @@ ConfigurationServices(builder);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 
@@ -64,6 +64,10 @@ cliente.MapGet("{id}/extrato", async (int id, DataContext db) => {
     });
 });
 
+cliente.MapGet("teste", async () => {
+
+    return Results.Ok("API RODANDO");
+});
 
 
 app.Run();
@@ -71,6 +75,11 @@ app.Run();
 
 void ConfigurationServices(WebApplicationBuilder builder)
 {
+    Console.WriteLine("Passou aqui");
+    
+    var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+    Console.WriteLine(connection);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddDbContext<DataContext>(p => p.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

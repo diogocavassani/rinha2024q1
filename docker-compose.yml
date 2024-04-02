@@ -13,12 +13,14 @@ services:
       
   api01: &api
     # image: bigodex/rinha-api-2024-q1:latest
-    build: ./RinhaBackEnd2024Q1/
+    build: ./RinhaBackEnd2024Q1
     hostname: rinha-api
     environment:
       - ConnectionStrings__DefaultConnection = "Host=db;Pooling=true;Database=rinha;User Id=postgres;Password=Postgres2024!"
+    expose:
+      - "8080"
     ports:
-      - "8081:80"
+      - "8081:8080"
     depends_on:
       - postgres
     deploy:
@@ -27,26 +29,26 @@ services:
           cpus: "0.30"
           memory: "120MB"
 
-  # api02:
-  #   <<: *api
-  #   ports:
-  #     - "8082:80"
+  api02:
+    <<: *api
+    hostname: api02
+    ports:
+      - "8082:8080"
   
-  # nginx:
-  #   image: nginx:latest
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
-  #   depends_on:
-  #     - api01
-  #     - api02
-  #   ports:
-  #     - "9999:9999"
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "0.45"
-  #         memory: "40MB"
-
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "9999:9999"
+    depends_on:
+      - api01
+      - api02
+    deploy:
+      resources:
+        limits:
+          cpus: "0.15"
+          memory: "15MB"
   postgres:
     image: postgres:latest
     hostname: db
