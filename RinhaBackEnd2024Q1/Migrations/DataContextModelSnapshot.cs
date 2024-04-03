@@ -62,7 +62,7 @@ namespace RinhaBackEnd2024Q1.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Realizada_em")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("realizada_em");
 
                     b.Property<char>("Tipo")
@@ -77,7 +77,7 @@ namespace RinhaBackEnd2024Q1.Migrations
 
                     b.HasIndex("IdCliente");
 
-                    b.ToTable("Tracacoes");
+                    b.ToTable("Transacoes");
                 });
 
             modelBuilder.Entity("RinhaBackEnd2024Q1.Model.Transacao", b =>

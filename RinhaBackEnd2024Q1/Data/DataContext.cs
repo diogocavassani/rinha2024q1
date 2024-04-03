@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using RinhaBackEnd2024Q1.Model;
 
 namespace RinhaBackEnd2024Q1.Data

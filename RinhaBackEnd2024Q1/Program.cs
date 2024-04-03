@@ -12,6 +12,18 @@ ConfigurationServices(builder);
 
 
 var app = builder.Build();
+try
+{
+    var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+
+    db.Database.Migrate();
+}
+catch (Exception)
+{
+
+}
+
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -75,11 +87,6 @@ app.Run();
 
 void ConfigurationServices(WebApplicationBuilder builder)
 {
-    Console.WriteLine("Passou aqui");
-    
-    var connection = builder.Configuration.GetConnectionString("DefaultConnection");
-
-    Console.WriteLine(connection);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddDbContext<DataContext>(p => p.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

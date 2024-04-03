@@ -12,8 +12,8 @@ using RinhaBackEnd2024Q1.Data;
 namespace RinhaBackEnd2024Q1.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240227020025_AlterandoFk")]
-    partial class AlterandoFk
+    [Migration("20240403000312_FistMigration")]
+    partial class FistMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -55,9 +55,6 @@ namespace RinhaBackEnd2024Q1.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Descricao")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -68,7 +65,7 @@ namespace RinhaBackEnd2024Q1.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Realizada_em")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("realizada_em");
 
                     b.Property<char>("Tipo")
@@ -81,16 +78,16 @@ namespace RinhaBackEnd2024Q1.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteId");
+                    b.HasIndex("IdCliente");
 
-                    b.ToTable("Tracacoes");
+                    b.ToTable("Transacoes");
                 });
 
             modelBuilder.Entity("RinhaBackEnd2024Q1.Model.Transacao", b =>
                 {
                     b.HasOne("RinhaBackEnd2024Q1.Model.Cliente", "Cliente")
                         .WithMany("Transacoes")
-                        .HasForeignKey("ClienteId")
+                        .HasForeignKey("IdCliente")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

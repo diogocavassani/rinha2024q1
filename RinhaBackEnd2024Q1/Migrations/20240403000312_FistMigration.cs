@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace RinhaBackEnd2024Q1.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class FistMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,7 +27,7 @@ namespace RinhaBackEnd2024Q1.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tracacoes",
+                name: "Transacoes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -35,30 +35,37 @@ namespace RinhaBackEnd2024Q1.Migrations
                     valor = table.Column<int>(type: "integer", nullable: false),
                     tipo = table.Column<char>(type: "character(1)", nullable: false),
                     descricao = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
-                    realizada_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ClienteId = table.Column<int>(type: "integer", nullable: true)
+                    realizada_em = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IdCliente = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tracacoes", x => x.Id);
+                    table.PrimaryKey("PK_Transacoes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tracacoes_cliente_ClienteId",
-                        column: x => x.ClienteId,
+                        name: "FK_Transacoes_cliente_IdCliente",
+                        column: x => x.IdCliente,
                         principalTable: "cliente",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tracacoes_ClienteId",
-                table: "Tracacoes",
-                column: "ClienteId");
+                name: "IX_Transacoes_IdCliente",
+                table: "Transacoes",
+                column: "IdCliente");
+            migrationBuilder.Sql(@"INSERT INTO public.cliente (limite, saldo) VALUES
+                                    (100000, 0),
+                                    (80000, 0),
+                                    (1000000, 0),
+                                    (10000000, 0),
+                                    (500000, 0)");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tracacoes");
+                name: "Transacoes");
 
             migrationBuilder.DropTable(
                 name: "cliente");

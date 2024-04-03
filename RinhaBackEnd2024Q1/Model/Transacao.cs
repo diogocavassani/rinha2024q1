@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RinhaBackEnd2024Q1.Model
 {
+    [Table("Transacoes")]
     public class Transacao
     {
         [Key]
