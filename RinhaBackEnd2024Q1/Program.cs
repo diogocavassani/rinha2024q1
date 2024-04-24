@@ -12,17 +12,17 @@ ConfigurationServices(builder);
 
 
 var app = builder.Build();
-try
-{
-    var scope = app.Services.CreateScope();
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+//try
+//{
+//    var scope = app.Services.CreateScope();
+//    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
 
-    db.Database.Migrate();
-}
-catch (Exception)
-{
+//    db.Database.Migrate();
+//}
+//catch (Exception)
+//{
 
-}
+//}
 
 
 // Configure the HTTP request pipeline.
@@ -46,20 +46,26 @@ cliente.MapPost("/{id}/transacoes", async (int id, TransacaoViewModel transacao,
     if (cliente is null)
         return Results.NotFound();
 
-    if (!cliente.AddTransacao(transacao))
-        return Results.UnprocessableEntity();
+    var saldos = transacao.Tipo == 'c' ? 
+        await db.AtualizarSaldos.FromSqlInterpolated($"SELECT * FROM atualizar_saldo_credito({id}, {(int)transacao.Valor}, {transacao.Descricao})").ToListAsync() :
+        await db.AtualizarSaldos.FromSqlInterpolated($"SELECT * FROM atualizar_saldo_debito({id}, {(int)transacao.Valor}, {transacao.Descricao})").ToListAsync();
+
+    if (saldos.FirstOrDefault()?.saldo_atual is null)
+            return Results.UnprocessableEntity();
+    // if (!cliente.AddTransacao(transacao))
+    //     return Results.UnprocessableEntity();
     
-    await db.SaveChangesAsync();
-    return Results.Ok(new { cliente.Limite, cliente.Saldo });
+    //await db.SaveChangesAsync();
+    return Results.Ok(new { cliente.Limite, saldos.FirstOrDefault()?.saldo_atual });
 });
 
 cliente.MapGet("{id}/extrato", async (int id, DataContext db) => {
     var cliente = await db.Clientes.FirstOrDefaultAsync(p => p.Id == id);
 
-    if(cliente is null)
+    if (cliente is null)
        return Results.NotFound();
 
-    var transacoes = await db.Tracacoes.Where(p => p.Id == id).OrderByDescending(p => p.Realizada_em).Take(5).Select(p =>
+    var transacoes = await db.Tracacoes.Where(p => p.IdCliente == id).OrderByDescending(p => p.Realizada_em).Take(5).Select(p =>
          new TransacaoExtradoViewModel
          {
              descricao = p.Descricao,

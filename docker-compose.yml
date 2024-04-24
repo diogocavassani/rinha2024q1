@@ -47,8 +47,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.15"
-          memory: "15MB"
+          cpus: "0.45"
+          memory: "40MB"
   postgres:
     image: postgres:latest
     hostname: db

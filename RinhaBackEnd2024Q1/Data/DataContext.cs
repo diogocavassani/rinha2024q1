@@ -12,12 +12,16 @@ namespace RinhaBackEnd2024Q1.Data
         }
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Transacao> Tracacoes { get; set; }
+        public DbSet<RetornoAtualizarSaldo> AtualizarSaldos => Set<RetornoAtualizarSaldo>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Cliente>().HasMany(t => t.Transacoes)
-                .WithOne(c => c.Cliente)
-                .HasForeignKey(t => t.IdCliente);
+            modelBuilder.Entity<Transacao>()
+             .HasOne(t => t.Cliente)
+             .WithMany(c => c.Transacoes)
+             .HasForeignKey(t => t.IdCliente);
+
+            modelBuilder.Entity<RetornoAtualizarSaldo>().HasNoKey();
             base.OnModelCreating(modelBuilder);
         }
     }

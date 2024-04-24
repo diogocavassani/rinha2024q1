@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RinhaBackEnd2024Q1.Model
 {
-    [Table("cliente")]
+    [Table("Clientes")]
     public class Cliente
     {
         public Cliente()
@@ -12,23 +12,28 @@ namespace RinhaBackEnd2024Q1.Model
             Transacoes = new List<Transacao>();
         }
         [Key]
-        [Column("id")]
+        [Column("Id")]
         public int Id { get; set; }
 
-        [Column("limite")]
+        [Column("Limite")]
         [Required]
         public int Limite { get; set; }
         
-        [Column("saldo")]
+        [Column("Saldo")]
         [Required]
         public int Saldo { get; set; }
         public virtual List<Transacao> Transacoes { get; set; }
 
         public bool AddTransacao(TransacaoViewModel transacao)
         {
-            Saldo -= transacao.Valor;
-            if (Saldo < Limite * -1)
-                return false;
+            if(transacao.Tipo == 'c')
+                Saldo += transacao.Valor;
+            else if(transacao.Tipo == 'd'){
+                Saldo -= transacao.Valor;
+                if (Saldo < Limite)
+                    return false;
+            }
+           
 
             Transacoes.Add(new Transacao { Descricao = transacao.Descricao, Tipo = transacao.Tipo, valor = transacao.Valor, Realizada_em = DateTime.Now, Cliente = this });
             return true;

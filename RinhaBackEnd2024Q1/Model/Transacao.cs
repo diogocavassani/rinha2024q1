@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace RinhaBackEnd2024Q1.Model
 {
@@ -25,8 +26,9 @@ namespace RinhaBackEnd2024Q1.Model
         [Column("realizada_em")]
         [Required]
         public DateTime Realizada_em { get; set; }
-        public virtual Cliente Cliente { get; set; }
-        public int IdCliente { get; internal set; }
+        public Cliente Cliente { get; set; }
+        [JsonIgnore]
+        public int IdCliente { get; set; }
     }
 }
 
